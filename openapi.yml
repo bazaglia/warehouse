@@ -1,0 +1,106 @@
+swagger: '2.0'
+info:
+  description: 'A warehouse server that lets you manage articles and products'
+  version: '1.0.0'
+  title: 'warehouse'
+host: 'localhost:8080'
+tags:
+  - name: 'article'
+    description: 'Everything about your articles'
+  - name: 'product'
+    description: 'Everything about your products'
+schemes:
+  - 'http'
+paths:
+  /articles:
+    post:
+      tags:
+        - 'article'
+      summary: 'Import a list of articles to the warehouse'
+      description: ''
+      operationId: 'uploadArticles'
+      consumes:
+        - 'multipart/form-data'
+      produces:
+        - 'application/json'
+      parameters:
+        - name: 'file'
+          in: 'formData'
+          description: 'file to upload'
+          required: true
+          type: 'file'
+      responses:
+        '200':
+          description: 'successful operation'
+
+  /products:
+    get:
+      tags:
+        - 'product'
+      summary: 'List all the products'
+      operationId: 'listProducts'
+      produces:
+        - 'application/json'
+      responses:
+        '200':
+          description: 'successful operation'
+          schema:
+            type: 'array'
+            items:
+              $ref: '#/definitions/Product'
+
+    post:
+      tags:
+        - 'product'
+      summary: 'Import a list of products to the warehouse'
+      description: ''
+      operationId: 'importProduct'
+      consumes:
+        - 'multipart/form-data'
+      produces:
+        - 'application/json'
+      parameters:
+        - name: 'file'
+          in: 'formData'
+          description: 'file to upload'
+          required: true
+          type: 'file'
+      responses:
+        '200':
+          description: 'successful operation'
+
+  /products/{productId}/sell:
+    post:
+      tags:
+        - 'product'
+      summary: 'Sell a product and update the inventory accordingly'
+      description: ''
+      operationId: 'sellProduct'
+      consumes:
+        - 'multipart/form-data'
+      produces:
+        - 'application/json'
+      parameters:
+        - name: 'productId'
+          in: 'path'
+          description: 'ID of product to sell'
+          required: true
+          type: 'string'
+          format: 'id'
+      responses:
+        '200':
+          description: 'successful operation'
+        '400':
+          description: 'invalid product id'
+
+definitions:
+  Product:
+    type: 'object'
+    properties:
+      id:
+        type: 'string'
+      name:
+        type: 'string'
+      stock:
+        type: 'integer'
+        format: 'int32'
